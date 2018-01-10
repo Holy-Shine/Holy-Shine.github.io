@@ -8,8 +8,4 @@ titles:
 key: page-about
 ---
 
-Just say something about yourself. :+1:
-
-{% highlight javascript %}
-  (() => console.log('hello, world!'))();
-{% endhighlight %}
+研究怎么生、天凤二段选手、不合格的魔法师
