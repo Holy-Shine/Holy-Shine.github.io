@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 再谈反向传播
+title: Logistic回归Cost函数和J(θ)的推导----Andrew Ng【machine learning】公开课
 key: 20180110
 tags: 机器学习
 ---
