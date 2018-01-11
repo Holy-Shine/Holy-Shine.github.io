@@ -34,5 +34,8 @@
     "gulp-rename": "^1.2.2",
     "gulp-svg2png": "^2.0.2",
     "gulp-to-ico": "^1.0.0"
+  },
+  "dependencies": {
+    "mume": "0.0.0"
   }
 }

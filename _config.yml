@@ -88,7 +88,7 @@ excerpt_type: text # text | html
 
 ## Build ##
 #markdown: kramdown
-markdown: hexo-renderer-marked
+markdown: mume
 highlighter: rouge
 permalink: date
 
