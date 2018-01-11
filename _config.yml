@@ -75,7 +75,8 @@ leancloud:
   # app_key:  #LeanCloud App key
   # app_class:  #LeanCloud App class
 
-# mathjax: true
+## 公式支持
+mathjax: true
 
 ## Paginate ##
 paginate: 5
