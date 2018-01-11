@@ -51,7 +51,6 @@ author:
   weibo:  绝章立直点三家
   # douban:  #your Douban username
   # linkedin:  #your Linkedin username
-skip_render: [html_blogs/**]
 ## Comment system (Disqus) ##
 disqus:
   # shortname:  #the Disqus shortname for the site
