@@ -87,7 +87,8 @@ excerpt_separator: <!--more-->
 excerpt_type: text # text | html
 
 ## Build ##
-markdown: kramdown
+#markdown: kramdown
+markdown: hexo-renderer-marked
 highlighter: rouge
 permalink: date
 
