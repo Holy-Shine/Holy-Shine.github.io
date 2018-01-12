@@ -14,7 +14,7 @@ tags: 机器学习
 
 以Andrew公开课的例子说明：
 ![](https://images2015.cnblogs.com/blog/957212/201702/957212-20170214155121472-498227653.png)
-<font color='blue' style="font-weight:bold">圆（蓝色）</font>和<font color='red' style="font-weight:bold">叉（红色）</font>是两类数据点，我们需要找到一个决策边界将其划分开，如图所示的边界形式显然是线性的形式，如图中所描述的：
+圆（蓝色）和叉（红色）是两类数据点，我们需要找到一个决策边界将其划分开，如图所示的边界形式显然是线性的形式，如图中所描述的：
 
 我们记为：
 \$\$ h_\theta(x)=g(\theta_0+\theta_1x_1+\theta_2x_2)$$
