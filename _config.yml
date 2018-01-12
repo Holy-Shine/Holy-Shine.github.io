@@ -75,7 +75,10 @@ leancloud:
   # app_key:  #LeanCloud App key
   # app_class:  #LeanCloud App class
 
-# mathjax: true
+mathjax:
+    enable: true
+    per_page: false
+    cdn: //cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML
 
 ## Paginate ##
 paginate: 5
@@ -87,6 +90,8 @@ excerpt_type: text # text | html
 
 ## Build ##
 markdown: kramdown
+kramdown:
+  input: GFM
 highlighter: rouge
 permalink: date
 
