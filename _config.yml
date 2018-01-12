@@ -53,7 +53,7 @@ author:
   # linkedin:  #your Linkedin username
 
 ## Comment system (Disqus) ##
-disqus:
+disqus:   holyshine
   # shortname:  #the Disqus shortname for the site
 
 ## Comment system (gitalk) ##
