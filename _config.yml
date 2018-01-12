@@ -53,18 +53,17 @@ author:
   # linkedin:  #your Linkedin username
 
 ## Comment system (Disqus) ##
-disqus:   holyshine
+disqus:
   # shortname:  #the Disqus shortname for the site
 
 ## Comment system (gitalk) ##
 # please refer to https://github.com/gitalk/gitalk for more info.
 gitalk:
-  # clientID:  #Github Application Client ID
-  # clientSecret:  #Github Application Client Secret
-  # repository:  #Github repo
-  # owner:  #Github repo owner
-  # admin: #Github repo owner and collaborators, only these guys can initialize github issues, IT IS A LIST.
-    # - owner
+  clientID:  e85ed5d813b4073ba89a
+  clientSecret:  3c775fd8a51b8d801dd08284f323eb3a3a6eb555
+  repository:  BlogComment
+  owner:  Holy-Shine
+  admin: Holy-Shine
 
 ## Google Analytics ##
 # ga_tracking_id:  #Google analytics id for the site
