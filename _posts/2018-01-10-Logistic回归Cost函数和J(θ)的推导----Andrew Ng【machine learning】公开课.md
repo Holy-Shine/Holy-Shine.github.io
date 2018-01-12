@@ -18,30 +18,43 @@ tags: 机器学习
 
 我们记为：  
 
-\$\$ h_\theta(x)=g(\theta_0+\theta_1x_1+\theta_2x_2) $$
-这里，括号里的就是决策边界的表达式，我们找一个函数$g$，将表达式结果作为输入，生成一个预测函数$h_\theta(x)$.这里我们使用$Sigmoid$函数:
-\sigma(z)=\frac{1}{1+e^{-z}}$$
+\$\$ h_\theta(x)=g(\theta_0+\theta_1x_1+\theta_2x_2) $$  
+
+这里，括号里的就是决策边界的表达式，我们找一个函数$g$，将表达式结果作为输入，生成一个预测函数$h_\theta(x)$.这里我们使用$Sigmoid$函数:  
+
+\$\$ \sigma(z)=\frac{1}{1+e^{-z}}$$
+
 从而：
-h_\theta(x)=\frac{1}{1+e^{-(\theta_0+\theta_1x_1+\theta_2x_2)}}$$
+
+\$\$ h_\theta(x)=\frac{1}{1+e^{-(\theta_0+\theta_1x_1+\theta_2x_2)}}$$
+
 然而有时候，决策边界用一维直线无法区分，也就是这里的$\theta$参数个数是变数，比如下面这堆数据
 ![](https://images2015.cnblogs.com/blog/957212/201702/957212-20170213233035144-1339635331.png)
 这是一种非线性的决策边界。
 可以看到这里，将$x_1,x_2$参数全部平方处理，找得一个圆形边界。
 ## 公式推导
-讲到这里，我们可以把边界形式做如下推广：
-\theta_0+\theta_1x_1+\theta_2x_2+\cdots+\theta_nx_n=\sum_{i=0}^n{\theta_ix_i}=\theta^Tx$$
+讲到这里，我们可以把边界形式做如下推广：  
+
+\$\$   \theta_0+\theta_1x_1+\theta_2x_2+\cdots+\theta_nx_n=\sum_{i=0}^n\theta_ix_i={\theta} ^Tx   $$
+
 决策边界表达式的最后一项是向量相乘的形式，即：
-(1,x_1,x_2,\cdots,x_n)\times \left(\begin{array}{c}\theta_0\\\cdots\\\theta_n\end{array}\right)$$
+
+\$\$(1,x_1,x_2,\cdots,x_n)\times \left(\begin{array}{c}\theta_0\\\\\cdots\\\\\theta_n\end{array}\right)$$
+
 将其输入到$Sigmoid$函数去判断其所属类别，就有了我们的预测函数，记为：
-h_\theta(x)=Sigmoid(\theta^Tx)=\frac{1}{1+e^{-\theta^Tx}}$$
+
+\$\$ h_\theta(x)=Sigmoid(\theta ^Tx) =\frac{1}{1+e ^{-\theta ^Tx}}$$
+
 根据$Sigmoid$的图像和线代知识：
 ![480px-Logistic-curve.svg.png](https://i.loli.net/2018/01/10/5a5633ad10acd.png)
 以上面的二分类例子为例，我们知道，当样本的分类为红色点的时候，它的坐标值带入边界函数则为正（红点在边界函数上方），所以输入到$Sigmoid$函数后输出大于0.5。于是，这个预测函数输出值大于0.5，那么代表x（数据点）所属类别为1，否则是0（对于二分类问题）。
 但是别忘了我们的最初的目标，这里的θ向量未知。我们的目的是：
 >**使用一种评价机制确定$\theta$的参数值，使得我们这个决策边界能更好地划分数据集**。
 
-这个过程在Andrew的课程里是使用一个代价函数，但是代价函数推导被略过了，他直接给出了cost函数和$J(\theta)$函数，然后通过梯度下降求得最优的$\theta$参数。其中，$J(\theta)$函数是这样的：
-J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^{(i)}logh_\theta(x^{(i)}+(1-y^{(i)})log(1-h_\theta(x^{(i)}))]$$
+这个过程在Andrew的课程里是使用一个代价函数，但是代价函数推导被略过了，他直接给出了cost函数和$J(\theta)$函数，然后通过梯度下降求得最优的$\theta$参数。其中，$J(\theta)$函数是这样的：  
+
+\$\$ J(\theta)=-\frac{1}{m}\sum_{i=1} ^{m}[y ^{(i)}logh_\theta(x ^{(i)}+(1-y ^{(i)})log(1-h_\theta(x ^{(i)}))]$$
+
 利用上面的代价函数以及梯度下降算法，我们就能求出$\theta$的值。也就能求出最能拟合数据的决策边界。
 接下来就要讲讲这个公式是怎么被推导出来的。
 我们先来看看现在我们已经知道什么：
@@ -71,17 +84,24 @@ J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^{(i)}logh_\theta(x^{(i)}+(1-y^{(i)})log(1
 
 接下来就是估计所需要的数学推导了。
 对于一个连续性的分布，我们需要它的概率密度函数，在本例中，其实就是那个$sigmoid$函数（取值范围0-1刚好表示的是发生概率），我们重新写在这里：
+
+$$
 \left\{
 \begin{aligned}
 &P(y=1|x;\theta)=h_\theta(x) \\
 &P(y=0|x;\theta)=1-h_\theta(x)
-\end{aligned}\right.(1)
+\end{aligned}
+\right.(1)
 $$
+
 把这两个式子写在一起：
-P(y|x;\theta)=(h_\theta(x))^y(1-h_\theta(x))^{1-y}\ \ \ \ \ \ \ (2)$$
+
+$$P(y|x;\theta)=(h_\theta(x))^y(1-h_\theta(x))^{1-y}\ \ \ \ \ \ \ (2)$$
 可以验证一下，当$y=1$或者$y=0$的时候，(2)式分别满足(1)式。对每个样本数据点，满足上式，所以对于群体，我们接下来继续。
 根据极大似然估计的求解步骤，取似然函数：
-L(\theta)=\prod^m_{i=1}P(y^{(i)}|x^i;\theta)=\prod^m_{i=1}(h_\theta(x))^y(1-h_\theta(x))^{1-y}$$
+
+\$\$L(\theta)=\prod ^m_{i=1}P(y ^{(i)}|x ^i;\theta)=\prod ^m_{i=1}(h_\theta(x)) ^y(1-h_\theta(x)) ^{1-y}$$
+
 显然这就是对于对样本集合中所有数据属于相应类别的概率连乘。
 要求$L(\theta)$的最大值对应的$\theta$参数。其中$m$是样本数据点的个数
 连乘不容易求解，同时又容易造成下溢出。这里由于$x$和$ln(x)$单调性相同，两边取对数:
