@@ -17,7 +17,7 @@ tags: 机器学习
 <font color='blue' style="font-weight:bold">圆（蓝色）</font>和<font color='red' style="font-weight:bold">叉（红色）</font>是两类数据点，我们需要找到一个决策边界将其划分开，如图所示的边界形式显然是线性的形式，如图中所描述的：
 
 我们记为：
-\$h_\theta(x)=g(\theta_0+\theta_1x_1+\theta_2x_2)\$
+$$h_\theta(x)=g(\theta_0+\theta_1x_1+\theta_2x_2)$$
 这里，括号里的就是决策边界的表达式，我们找一个函数$g$，将表达式结果作为输入，生成一个预测函数$h_\theta(x)$.这里我们使用$Sigmoid$函数:
 $$\sigma(z)=\frac{1}{1+e^{-z}}$$
 从而：
