@@ -8,8 +8,5 @@ titles:
 key: page-about
 ---
 
-Just say something about yourself. :+1:
-
-{% highlight javascript %}
-  (() => console.log('hello, world!'))();
-{% endhighlight %}
+研究怎么生、天凤二段选手、不合格的魔法师
+> 本人从博客园迁移至此，原博客地址 [http://www.cnblogs.com/HolyShine](http://www.cnblogs.com/HolyShine)
