@@ -1,9 +1,14 @@
 ---
-layout: layout
+layout: blog-default
 ---
-
-{% assign __ = site.data.languages[site.language] %}
-{% include page.html %}
-<script type="text/javascript"
-    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
+<div class="m-page">
+  <article class="main">
+    {%- include snippets/page-title.html -%}
+    <h1>{{ __return }}</h1>
+    <div class="m-article-content" itemprop="articleBody">{{ content }}</div>
+    {%- if page.comment != false -%}
+      <section>{%- include utils/comment-disqus.html -%}</section>
+      <section>{%- include utils/comment-gitalk.html -%}</section>
+    {%- endif -%}
+  </article>
+</div>
