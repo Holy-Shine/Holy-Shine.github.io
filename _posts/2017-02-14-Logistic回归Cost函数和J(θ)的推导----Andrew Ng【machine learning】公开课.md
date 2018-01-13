@@ -2,7 +2,7 @@
 layout: post
 title: Logistic回归Cost函数和J(θ)的推导----Andrew Ng【machine learning】公开课
 tags: 机器学习
-key: 20180112_logistic
+key: 20170214_logistic
 picture_frame: shadow
 ---
 最近翻Peter Harrington的《机器学习实战》，看到Logistic回归那一章有点小的疑问。
