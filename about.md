@@ -2,8 +2,8 @@
 layout: page
 titles:
   en: About
-  zh: 关于
-  zh-Hans: 关于
+  zh: 关于本人
+  zh-Hans: 关于本人
   zh-Hant: 關於
 key: page-about
 ---
