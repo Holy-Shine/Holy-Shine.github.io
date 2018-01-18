@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>【翻译】Neural Collaborative Filtering--神经协同过滤</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({"extensions":["tex2jax.js"],"jax":["input/TeX","output/HTML-CSS"],"messageStyle":"none","tex2jax":{"processEnvironments":false,"processEscapes":true,"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"TeX":{"extensions":["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]},"HTML-CSS":{"availableFonts":["TeX"]}});
+        </script>
+        <script type="text/javascript" async src="file:///C:\Users\HolyShine\.atom\packages\markdown-preview-enhanced\node_modules\@shd101wyy\mume\dependencies\mathjax\MathJax.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+      <style>
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="%E6%91%98%E8%A6%81">摘要</h1>
+
+<p>近年来，深层神经网络在语音识别，计算机视觉和自然语言处理方面都取得了巨大的成功。然而相对的，对应用深层神经网络的推荐系统的探索却受到较少的关注。在这项工作中，我们力求开发一种基于神经网络的技术，来解决在含有隐形反馈的基础上进行推荐的关键问题——协同过滤。</p>
+<p>尽管最近的一些工作已经把深度学习运用到了推荐中，但是他们主要是用它（深度学习）来对一些辅助信息（auxiliary information）建模，比如描述文字的项目和音乐的声学特征。当涉及到建模协同过滤的关键因素（key factor）——用户和项目（item）特征之间的交互的时候，他们仍然采用矩阵分解的方式，并将内积（inner product）做为用户和项目的潜在特征点乘。通过用神经结构代替内积这可以从数据中学习任意函数，据此我们提出一种通用框架，我们称它为NCF（Neural network-based Collaborative Filtering，基于神经网络的协同过滤）。NCF是一种通用的框架，它可以表达和推广矩阵分解。为了提升NFC的非线性建模能力，我们提出了使用多层感知机去学习用户-项目之间交互函数（interaction function）。在两个数据集的广泛实验显示了我们提出的NCF框架对最先进的方法的显著改进。</p>
+<h1 class="mume-header" id="%E5%85%B3%E9%94%AE%E5%AD%97">关键字</h1>
+
+<p>协同过滤,神经网络,深度学习,矩阵分解,隐性反馈（Implicit Feedback）.</p>
+<h1 class="mume-header" id="1-%E5%BC%95%E8%A8%80">1. 引言</h1>
+
+<p>在信息爆炸的时代，推荐系统在减轻信息过载方面发挥了巨大的作用，被众多在线服务，包括电子商务，网络新闻和社交媒体等广泛采用。个性化推荐系统的关键在于根据过去用户交互的内容（e.g. 评分，点击），对用户对项目的偏好进行建模，就是所谓的协同过滤[31,46]。在众多的协同过滤技术中，矩阵分解（MF）[14,21]是最受欢迎的，它将用户和项目映射到共享潜在空间（shared latent space），使用潜在特征向量（latent features），用以表示用户或项目。这样一来，用户在项目上的交互就被建模为它们潜在向量之间的内积。</p>
+<p>由于Netflix Prize的普及，MF已经成为了潜在因素（latent factor）建模推荐的默认方法。已经有大量的工作致力于增强MF（的性能），例如将其与基于邻居（相邻用户or项目）的模型集成[21]，与项目内容的主题模型[38]相结合，还有将其扩展到因式分解机（factorization machines）[26]，以实现特征的通用建模。尽管MF对协同过滤有效，但众所周知，其性能可以被简单选择交互函数（内积）所阻碍。例如，对于显式反馈的评估预测任务，可以通过将用户和项目偏移项纳入交互函数来改善MF模型的性能。虽然内积算子[14]似乎只是一个微不足道的调整，但它指出了设计一个更好的专用交互函数，用于建模用户和项目之间的潜在特征交互的积极效果。简单地将潜在特征的乘积线性组合的内积可能不足以捕捉用户交互数据的复杂结构。</p>
+<p>本文探讨了使用深层神经网络来学习数据的交互函数，而不是那些以前已经完成的手动工作（handcraft）[18,21]。神经网络已经被证明有拟合任何连续函数的能力[17]，最近深层神经网络（DNN）被发掘出在几个领域的出色表现：从计算机视觉，语音识别到文本处理[5,10,15,47]。然而，与广泛的MF方法文献相比，使用DNNs进行推荐的工作相对较少。虽然最近的一些研究进展[37,38,45]已经将DNN应用于推荐任务，并展示出不错的效果，但他们大多使用DNN来建模一些辅助信息，例如物品的文字描述，音乐的音频特征和图像的视觉内容（描述）。对于影响建模效果的关键因素——协同过滤，他们仍然采用MF，使用内积结合用户和项目潜在特征。</p>
+<p>我们这项工作是通过形式化用于协同过滤的神经网络建模方法来解决上述研究问题。我们专注于隐性反馈（implicit feedback），通过参考观看视频，购买产品和点击项目等间接反映用户偏好的行为。与显性反馈（explicit feedback）（i.e. 评级和评论）相比，隐性反馈可以自动跟踪，从而更容易为内容提供商所收集。但是，由于隐性反馈不能反映用户的满意度，并且负反馈（negative feedback）存在自然稀疏（natural scarcity）问题，使得这个问题更具挑战性。在本文中，我们探讨了如何利用DNN来模拟噪声隐性反馈信号的中心问题。</p>
+<p>这项工作的主要贡献有如下几点：</p>
+<p>1. 我们提出了一种神经网络结构来模拟用户和项目的潜在特征，并设计了基于神经网络的协同过滤的通用框架NCF。</p>
+<p>2. 我们表明MF可以被解释为NCF的特例，并利用多层感知器来赋予NCF高水平的非线性建模能力。</p>
+<p>3. 我们对两个现实世界的数据集进行广泛的实验，以证明我们的NCF方法的有效性和对使用深度学习进行协作过滤的承诺。</p>
+<h1 class="mume-header" id="2-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">2. 准备工作</h1>
+
+<p>我们首先把问题形式化，并讨论现有的隐性反馈协同过滤解决方案。然后，我们简要概括广泛使用的MF模型，重点指出使用内积所造成的对模型的限制。</p>
+<h2 class="mume-header" id="21-%E5%AD%A6%E4%B9%A0%E9%9A%90%E6%80%A7%E6%95%B0%E6%8D%AE">2.1 学习隐性数据</h2>
+
+<p>令<span class="mathjax-exps">$M$</span>和<span class="mathjax-exps">$N$</span>分别表示用户和项目的数量。我们将从用户的隐性反馈得到的用户-项目交互矩阵<span class="mathjax-exps">$Y&#x5C;in &#x5C;mathbb{R}^{M&#x5C;times N}$</span>定义为:</p>
+<p><div class="mathjax-exps">$$y_{ui}=&#x5C;left&#x5C;{  &#x5C;begin{aligned}  &amp;1, &#x5C;bf if&#x5C; interaction(user&#x5C; u, item&#x5C; i)&#x5C; is&#x5C; observed.&#x5C;&#x5C;  &amp;0, &#x5C;bf otherwise  &#x5C;end{aligned}&#x5C;right. (1)$$</div></p>
+<p>这里 <span class="mathjax-exps">$y_{ui}$</span> 为 1 表示用户 <span class="mathjax-exps">$u$</span> 和项目 <span class="mathjax-exps">$i$</span> 存在交互记录;然而这并不意味着 <span class="mathjax-exps">$u$</span> 真的喜欢  <span class="mathjax-exps">$i$</span> 。同样的，值 0 也不是表明 <span class="mathjax-exps">$u$</span> 不喜欢 <span class="mathjax-exps">$i$</span> ，也有可能是这个用户根本不知道有这个项目。这对隐性反馈的学习提出了挑战，因为它提供了关于用户偏好的噪声信号。虽然观察到的条目至少反映了用户对项目的兴趣，但是未查看的条目可能只是丢失数据，并且这其中存在自然稀疏的负反馈。</p>
+<p>在隐性反馈上的推荐问题可以表达为估算矩阵 <span class="mathjax-exps">$Y$</span> 中未观察到的条目的分数问题（这个分数被用来评估项目的排名）。基于模型的方法假定这些缺失的数据可以由底层模型生成（或者说描述）。形式上它可以被抽象为学习函数 <span class="mathjax-exps">$&#x5C;hat{y}_{ui}=f(u,i &#x5C;vert &#x5C;Theta)$</span> ,其中 <span class="mathjax-exps">$&#x5C;hat{y}_{ui}$</span> 表示交互 <span class="mathjax-exps">$y_{ui}$</span> 的预测分数，<span class="mathjax-exps">$&#x5C;Theta$</span> 表示模型参数，<span class="mathjax-exps">$f$</span> 表示表示模型参数映射到预测分数的函数（我们把它称作交互函数）。</p>
+<p>为了估计参数<span class="mathjax-exps">$&#x5C;Theta$</span>，现有的方法一般是遵循机器学习范例，优化目标函数。在文献中最常用到两种损失函数：逐点损失[14，19]（pointwise loss）和成对损失[27，33] (pairwise loss) 。由于显性反馈研究上丰富的工作的自然延伸[21，46]，在逐点的学习方法上通​​常是遵循的回归模式，最小化 <span class="mathjax-exps">$&#x5C;hat{y}_{ui}$</span> 及其目标值 <span class="mathjax-exps">$y_{ui}$</span>之间的均方误差。同时为了处理没有观察到的数据，他们要么将所有未观察到的条目视作负反馈，要么从没有观察到条目中抽样作为负反馈实例[14]。对于成对学习[27，44]，做法是，观察到的条目应该比未观察到的那些条目的排名更高。因此，成对学习最大化观察项 <span class="mathjax-exps">$&#x5C;hat{y}_{ui}$</span> 和未观察到的条目 <span class="mathjax-exps">$&#x5C;hat{y}_{ui}$</span> 之间的空白，而不是减少 <span class="mathjax-exps">$&#x5C;hat{y}_{ui}$</span> 和 <span class="mathjax-exps">$&#x5C; y_{ui}$</span> 之间的损失误差。</p>
+<p>更进一步，我们的NCF框架利用神经网络,参数化相互作用函数 <span class="mathjax-exps">$f$</span>,从而估计 <span class="mathjax-exps">$&#x5C;hat{y}_{ui}$</span>。因此，它就很自然地同时支持点损失和成对损失。</p>
+<h2 class="mume-header" id="22-%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3">2.2 矩阵分解</h2>
+
+<p>MF(Matrix Factorization)用一个潜在特征向量实值将每个用户和项目关联起来。令 <span class="mathjax-exps">$&#x5C;mathbf{ &#x5C;mathrm{p}}_{u}$</span> 和 <span class="mathjax-exps">$&#x5C;mathbf{ &#x5C;mathrm{q}}_{i}$</span> 分别表示用户 <span class="mathjax-exps">$u$</span> 和项目 <span class="mathjax-exps">$i$</span> 的潜在向量；MF评估相互作用<span class="mathjax-exps">$&#x5C; y_{ui}$</span> 作为 <span class="mathjax-exps">$&#x5C;mathbf{ &#x5C;mathrm{p}}_{u}$</span> 和 <span class="mathjax-exps">$&#x5C;mathbf{ &#x5C;mathrm{q}}_{i}$</span> 的内积：</p>
+<p><div class="mathjax-exps">$$&#x5C;hat{y}_{u，i}=f(u,i&#x5C;mid &#x5C;mathbf{&#x5C;mathrm{p}_{u}},&#x5C;mathbf{&#x5C;mathrm{q}_{i}})=&#x5C;mathbf{&#x5C;mathrm{p}_{u}^{T}}&#x5C;mathbf{&#x5C;mathrm{q}_{i}}=&#x5C;sum_{k=1}^{K}p_{uk}q_{ik},&#x5C; &#x5C; &#x5C; &#x5C; (2)$$</div></p>
+<p>这里的 <span class="mathjax-exps">$K$</span> 表示潜在空间（latent space）的维度。正如我们所看到的，MF模型是用户和项目的潜在因素的双向互动，它假设潜在空间的每一维都是相互独立的并且用相同的权重将它们线性结合。因此，MF可视为潜在因素（latent factor）的线性模型。</p>
+<p><img src="https://i.loli.net/2018/01/18/5a6035cfadd38.jpg" alt="1.JPG"></p>
+<p>图1（Figure 1）展示了的内积函数（inner product function）如何限制MF的表现力。这里有两个背景必须事先说明清楚以便于更好地了解例子。第一点，由于MF将用户和项目映射到同一潜在空间中，两个用户之间的相似性也可以用内积，或者潜在向量之间的角度的余弦值来衡量<sup>1</sup>。第二点，不失一般性，我们使用Jaccard系数<sup>2</sup>作为MF需要恢复的两个用户的真实状况之间的相似度。</p>
+<blockquote>
+<p>1: 假定潜在向量都是单位长度<br>
+2：令 <span class="mathjax-exps">$&#x5C;boldsymbol{R}_{u}$</span> 表示与用户 <span class="mathjax-exps">$u$</span> 交互的项目集，那么用户 <span class="mathjax-exps">$u$</span> 和 <span class="mathjax-exps">$j$</span> 之间的Jaccard相似系数就被定义为：<br>
+<span class="mathjax-exps">$s_{ij}=&#x5C;frac{&#x5C;mid &#x5C;boldsymbol{R}_{i}&#x5C;mid &#x5C;cap&#x5C;mid &#x5C;boldsymbol{R}_{j}&#x5C;mid }{&#x5C;mid &#x5C;boldsymbol{R}_{i}&#x5C;mid &#x5C;cup&#x5C;mid &#x5C;boldsymbol{R}_{j}&#x5C;mid }$</span></p>
+</blockquote>
+<p>我们首先关注的图1(a)中的前三行（用户）。很容易可以计算出 <span class="mathjax-exps">$s_{23}(0.66)&gt;s_{12}(0.5)&gt;s_{13}(0.4)$</span> 。这样，<span class="mathjax-exps">$&#x5C;bf p_{1}$</span>，<span class="mathjax-exps">$&#x5C;bf p_{2}$</span> 和 <span class="mathjax-exps">$&#x5C;bf p_{3}$</span> 在潜在空间中的几何关系可绘制成图1(b)。现在，让我们考虑一个新的用户 <span class="mathjax-exps">$u_{4}$</span>，它的输入在图1(a)中的用虚线框出。我们同样可以计算出 <span class="mathjax-exps">$s_{41}(0.6)&gt;s_{43}(0.4)&gt;s_{42}(0.2)$</span> ，表示 <span class="mathjax-exps">$u_{4}$</span> 最接近 <span class="mathjax-exps">$u_{1}$</span>，接着是  <span class="mathjax-exps">$u_{3}$</span> ，最后是 <span class="mathjax-exps">$u_{2}$</span> 。然而，如果MF模型将 <span class="mathjax-exps">$&#x5C;bf p_{4}$</span> 放在了 最接近 <span class="mathjax-exps">$&#x5C;bf p_{1}$</span> 的位置（图1(b) 中的虚线展示了两种不同的摆放 <span class="mathjax-exps">$&#x5C;bf p_{4}$</span> 的方式，结果一样），那么会使得 <span class="mathjax-exps">$&#x5C;bf p_{4}$</span> 相比与 <span class="mathjax-exps">$&#x5C;bf p_{3}$</span> 更接近于 <span class="mathjax-exps">$&#x5C;bf p_{2}$</span> （显然，根据图1(a)，<span class="mathjax-exps">$u_{4}$</span> 应该更接近 <span class="mathjax-exps">$u_{3}$</span>），这会导致很大的排名误差（ranking loss）。</p>
+
+      </div>
+      <div class="md-sidebar-toc"><ul>
+<li><a href="#%E6%91%98%E8%A6%81">摘要</a></li>
+<li><a href="#%E5%85%B3%E9%94%AE%E5%AD%97">关键字</a></li>
+<li><a href="#1-%E5%BC%95%E8%A8%80">1. 引言</a></li>
+<li><a href="#2-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">2. 准备工作</a>
+<ul>
+<li><a href="#21-%E5%AD%A6%E4%B9%A0%E9%9A%90%E6%80%A7%E6%95%B0%E6%8D%AE">2.1 学习隐性数据</a></li>
+<li><a href="#22-%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3">2.2 矩阵分解</a></li>
+</ul>
+</li>
+</ul>
+</div>
+      <a id="sidebar-toc-btn">≡</a>
+    </body>
+
+
+
+
+
+    <script>
+(function bindTaskListEvent() {
+  var taskListItemCheckboxes = document.body.getElementsByClassName('task-list-item-checkbox')
+  for (var i = 0; i < taskListItemCheckboxes.length; i++) {
+    var checkbox = taskListItemCheckboxes[i]
+    var li = checkbox.parentElement
+    if (li.tagName !== 'LI') li = li.parentElement
+    if (li.tagName === 'LI') {
+      li.classList.add('task-list-item')
+    }
+  }
+}())
+</script>
+
+<script>
+
+var sidebarTOCBtn = document.getElementById('sidebar-toc-btn')
+sidebarTOCBtn.addEventListener('click', function(event) {
+  event.stopPropagation()
+  if (document.body.hasAttribute('html-show-sidebar-toc')) {
+    document.body.removeAttribute('html-show-sidebar-toc')
+  } else {
+    document.body.setAttribute('html-show-sidebar-toc', true)
+  }
+})
+</script>
+
+  </html>
