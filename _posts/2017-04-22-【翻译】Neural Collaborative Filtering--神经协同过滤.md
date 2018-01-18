@@ -147,3 +147,14 @@ $$\widehat{y}_{ui}=\sigma({\bf h}^{T}a({\bf p}_u\odot{\bf q}_i)+{\bf W}\begin{bm
 $$\phi^{GMF}={\bf p}_u^G\odot{\bf q}_i^G,\\\phi^{MLP}=a_{L}(W_L^T(a_{L-1}(...a_{2}(W_2^T\begin{bmatrix}{{\bf p}_u^M}\\{{\bf q}_i^M}\end{bmatrix}+{\bf b}_2)...))+{\bf b}_L),\\\widehat{y}_{ui}=\sigma({\bf h}^T\begin{bmatrix}{\phi^{GMF}}\\{\phi^{MLP}}\end{bmatrix}),\ \ \ \ (12)$$
 
 这里的 $${\bf p}_u^G$$ 和 $${\bf p}_u^M$$ 分别表示 GMF 部分和 MLP 部分的用户嵌入（user embedding）；同样的，$${\bf q}_i^G$$ 和 $${\bf q}_i^M$$ 分别表示项目的嵌入。如之前所讨论的，我们使用ReLU作为 MLP层的激活功能。该模型结合MF的线性度和DNNs的非线性度，用以建模用户-项目之间的潜在结构。我们将这一模式称为“NeuMF”，简称神经矩阵分解（Neural Matrix Factorization）。该模型的每个模型参数都能使用标准反向传播（back-propagation）计算，由于空间限制这里就不再展开。
+
+### 3.4.1 预训练
+由于NeuMF的目标函数的非凸性，使得基于梯度的优化方法只能找到局部最优解（这也是训练一般神经网络所面临的问题）。研究表明，初始化（initialization）在深度学习模型的收敛性和性能的方面起到了重要的作用[7]。由于 NeuMF 是 GMF 和 MLP 的组合，我们建议使用 GMF 和 MLP 的预训练模型来初始化NeuMF。
+
+我们首先训练随机初始化的 GMF 和 MLP 直到模型收敛。然后，我们用它们的模型参数初始化 NeuMF 相应部分的参数。唯一的调整是在输出层，在那里我们将两者用权重连接起来：
+
+$$h\leftarrow\begin{bmatrix}{\alpha{\bf h}^{GMF}}\\{(1-\alpha){\bf h}^{MLP}}  \end{bmatrix},\ \ \ \ (13)$$
+
+这里 $${\bf h}^{GMF}$$ 和 $${\bf h}^{MLP}$$ 分别表示 GMF 和 MLP 模型预训练的 $${\bf h}$$ 向量； $$\alpha$$ 是一个超参数，用来权衡两个预训练模型（的比重）。
+
+　　对于从头开始训练的 GMF 和 MLP ，我们采用自适应矩估计（Adam，Adaptive Moment Estimation）[20]，它通过对不频繁的参数进行频繁和更大幅度的更新来适应每个参数的学习速率。Adam方法在两种模型上的收敛速度都比普通SGD快，并缓解了调整学习率的痛苦。在将预先训练的参数输入NeuMF之后，我们用普通SGD而不是Adam进行优化。 这是因为Adam需要保存更新参数的动量信息（momentum information）。因为我们用预先训练的模型参数初始化NeuMF，并且放弃保存动量信息，不适合用基于动量的方法进一步优化NeuMF。
