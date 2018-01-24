@@ -136,7 +136,7 @@ $$
 
 一个直接的解决方法是让GMF和MLP共享相同的嵌入层（Embedding Layer），然后再结合它们分别对相互作用的函数输出。这种方式和著名的神经网络张量（NTN,Neural Tensor Network）[33]有点相似。具体地说，对于结合GMF和单层MLP的模型可以公式化为：
 
-$$\widehat{y}_{ui}=\sigma({\bf h}^{T}a({\bf p}_u\odot{\bf q}_i)+{\bf W}\begin{bmatrix}{{\bf p}_u}\\{{\bf q}_i}\end{bmatrix}+{\bf b}).\ \ \ \ (11)$$
+$$\widehat{y}_{ui}=\sigma({\bf{h}}^Ta({\bf p}_u\odot{\bf q}_i)+{\bf W}[{\bf{p}}_u,{\bf{q}}_i]^T+\bf b).\ \ \ \ (11)$$
 
 然而，共享GMF和MLP的嵌入层可能会限制融合模型的性能。例如，它意味着，GMF和MLP必须使用的大小相同的嵌入（embedding，这里指的应该是潜在向量维度，下面的embedding都被译为嵌入）;对于数据集，两个模型的最佳嵌入尺寸差异很大，使得这种解决方案可能无法获得最佳的组合。
 
