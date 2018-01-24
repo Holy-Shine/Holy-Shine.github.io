@@ -144,7 +144,7 @@ $$\widehat{y}_{ui}=\sigma({\bf{h}}^Ta({\bf p}_u\odot{\bf q}_i)+{\bf W}[{\bf{p}}_
 
 为了使得融合模型具有更大的灵活性，我们允许GMF和MLP学习独立的嵌入，并结合两种模型通过连接他们最后的隐层输出。图3（Figure 3）展示了我们的方案，公式如下：
 
-$$\phi^{GMF}={\bf p}_u^G\odot{\bf q}_i^G,\\\phi^{MLP}=a_{L}(W_L^T(a_{L-1}(...a_{2}(W_2^T\begin{bmatrix}{{\bf p}_u^M}\\{{\bf q}_i^M}\end{bmatrix}+{\bf b}_2)...))+{\bf b}_L),\\\widehat{y}_{ui}=\sigma({\bf h}^T\begin{bmatrix}{\phi^{GMF}}\\{\phi^{MLP}}\end{bmatrix}),\ \ \ \ (12)$$
+$$\phi^{GMF}={\bf p}_u^G\odot{\bf q}_i^G,\\\phi^{MLP}=a_{L}(W_L^T(a_{L-1}(...a_{2}(W_2^T[{{\bf p}}_u^M {{\bf q}}_i^M]^T+{\bf b}_2)...))+{\bf b}_L),\\\widehat{y}_{ui}=\sigma({\bf h}^T[{\phi^{GMF}} ,{\phi^{MLP}}]^T),\ \ \ \ (12)$$
 
 这里的 $${\bf p}_u^G$$ 和 $${\bf p}_u^M$$ 分别表示 GMF 部分和 MLP 部分的用户嵌入（user embedding）；同样的，$${\bf q}_i^G$$ 和 $${\bf q}_i^M$$ 分别表示项目的嵌入。如之前所讨论的，我们使用ReLU作为 MLP层的激活功能。该模型结合MF的线性度和DNNs的非线性度，用以建模用户-项目之间的潜在结构。我们将这一模式称为“NeuMF”，简称神经矩阵分解（Neural Matrix Factorization）。该模型的每个模型参数都能使用标准反向传播（back-propagation）计算，由于空间限制这里就不再展开。
 
