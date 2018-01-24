@@ -121,11 +121,15 @@ $$\widehat{y}_{ui}=a_{out}\left({\bf h}^{T}\left({\bf{p}}_{u}\odot{\bf{q}}_{i} \
 
 
 $$
-\bf{z}_{1}=\phi_{1}({{\bf{p}}_{u}},{{\bf{q}}_{i}})=[{\bf{p}}_{u},{\bf{q}}_{i}]^ T \\
-\phi_{2}({\bf{z}}_{1})=a_{2}\left({\bf{W}}_2^T{\bf{z}}_{1}+{\bf b}_{2}\right),\\
-......\\
-\phi_{L}({\bf{z}}_{L-1})=a_{L}\left({\bf{W}}_L^T{\bf{z}}_{L-1}+{\bf b}_{L}\right),\\
-\widehat{y}_{ui}=\sigma\left({\bf{h}}^{T}\phi_{L}\left({\bf{z}}_{L-1}\right)\right),\ \ \ \ \ \ \ \ \ \ (10)$$
+\bf{z}_{1}=\phi_{1}({{\bf{p}}_{u}},{{\bf{q}}_{i}})=[{\bf{p}}_{u},{\bf{q}}_{i}]^ T $$
+
+$$\phi_{2}({\bf{z}}_{1})=a_{2}\left({\bf{W}}_2^T{\bf{z}}_{1}+{\bf b}_{2}\right),$$
+
+$$.....$$
+
+$$\phi_{L}({\bf{z}}_{L-1})=a_{L}\left({\bf{W}}_L^T{\bf{z}}_{L-1}+{\bf b}_{L}\right),$$
+
+$$\widehat{y}_{ui}=\sigma\left({\bf{h}}^{T}\phi_{L}\left({\bf{z}}_{L-1}\right)\right), \ \ \ \ \ \ \ \ \ (10)$$
 
 这里的 $${\bf W}_{x}$$, $${\bf b}_{x}$$ 和 $$a_{x}$$ 分别表示 $$x$$ 层的感知机中的的权重矩阵，偏置向量（神经网络的神经元阈值）和激活函数。对于MLP层的激活函数，可以选择sigmoid，双曲正切（tanh）和ReLU，等等。我们分析一下每个函数：1)sigmoid函数将每个神经元的输出限制在（0,1），这有可能限制该模型的性能;并且它存在过饱和的问题，当输出接近1或者0的时候，神经元就会陷入停止学习的困境（这里应该指的是“早停的问题”）。2)虽然双曲正切是一个更好的选择，并已被广泛使用[6，44]，但它只是在一定程度上缓和了sigmoid的问题，因为它可以被看作是sigmoid的缩放的版本（$$tanh(x/2)=2σ(x)-1$$）。3)因此，我们选择ReLU，它更具生物合理性（biologically plausible），并且已经被证明不会导致过饱和[9];此外，它支持稀疏的激活（sparse activations），非常适合稀疏的数据，使模型不至于过拟合。我们的实验结果表明，ReLU的表现略好于双曲正切函数tanh和sigmoid。
 
@@ -144,7 +148,11 @@ $$\widehat{y}_{ui}=\sigma({\bf{h}}^Ta({\bf p}_u\odot{\bf q}_i)+{\bf W}[{\bf{p}}_
 
 为了使得融合模型具有更大的灵活性，我们允许GMF和MLP学习独立的嵌入，并结合两种模型通过连接他们最后的隐层输出。图3（Figure 3）展示了我们的方案，公式如下：
 
-$$\phi^{GMF}={\bf p}_u^G\odot{\bf q}_i^G,\\\phi^{MLP}=a_{L}(W_L^T(a_{L-1}(...a_{2}(W_2^T[{{\bf p}}_u^M {{\bf q}}_i^M]^T+{\bf b}_2)...))+{\bf b}_L),\\\widehat{y}_{ui}=\sigma({\bf h}^T[{\phi^{GMF}} ,{\phi^{MLP}}]^T),\ \ \ \ (12)$$
+$$\phi^{GMF}={\bf p}_u^G\odot{\bf q}_i^G,$$
+
+$$\phi^{MLP}=a_{L}(W_L^T(a_{L-1}(...a_{2}(W_2^T[{{\bf p}}_u^M {{\bf q}}_i^M]^T+{\bf b}_2)...))+{\bf b}_L),$$
+
+$$\widehat{y}_{ui}=\sigma({\bf h}^T[{\phi^{GMF}} ,{\phi^{MLP}}]^T),\ \ \ \ (12)$$
 
 这里的 $${\bf p}_u^G$$ 和 $${\bf p}_u^M$$ 分别表示 GMF 部分和 MLP 部分的用户嵌入（user embedding）；同样的，$${\bf q}_i^G$$ 和 $${\bf q}_i^M$$ 分别表示项目的嵌入。如之前所讨论的，我们使用ReLU作为 MLP层的激活功能。该模型结合MF的线性度和DNNs的非线性度，用以建模用户-项目之间的潜在结构。我们将这一模式称为“NeuMF”，简称神经矩阵分解（Neural Matrix Factorization）。该模型的每个模型参数都能使用标准反向传播（back-propagation）计算，由于空间限制这里就不再展开。
 
