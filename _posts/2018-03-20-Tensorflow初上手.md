@@ -1,4 +1,8 @@
-# Tensorflow初上手
+layout: post
+title: Tensorflow初上手
+tags: 机器学习 深度学习 Tensorflow
+key: 20180320_tsfhjm
+picture_frame: shadow
 
 本文翻译自[www.tensorflow.org](www.tensorflow.org)的英文教程。
 
