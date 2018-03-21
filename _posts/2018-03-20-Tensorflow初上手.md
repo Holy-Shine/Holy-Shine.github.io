@@ -8,7 +8,7 @@ picture_frame: shadow
 
 本文翻译自[www.tensorflow.org](www.tensorflow.org)的英文教程。
 
-本文档介绍了TensorFlow编程环境，并向您展示了如何使用Tensorflow解决鸢尾花分类问题。
+本文档介绍了TensorFlow编程环境，并向您展示了如何使用Tensorflow解决鸢尾花分类问题。<!--more-->
 
 
 
