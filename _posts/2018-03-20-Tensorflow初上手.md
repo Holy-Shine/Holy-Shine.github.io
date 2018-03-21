@@ -226,3 +226,121 @@ for key in train_x,keys():
 
 现在我们已经描述了我们希望模型如何表示原始特征，我们可以构建`Estimator`。
 
+
+
+## 实例化一个Estimator
+
+鸢尾花问题是一个经典的分类问题。幸运的是，TensorFlow提供了几个预置的分类器	`Estimators`，其中包括：
+
+- **tf.estimator.DNNClassifier**适用于执行多分类的深层模型。
+- **tf.estimator.DNNLinearCombinedClassifier**适用于广泛和深度模型。
+- **tf.estimator.LinearClassifier**用于基于线性模型的分类器。
+
+对于鸢尾花问题，`tf.estimator.DNNClassifier`看起来是最好的选择。以下是我们如何实例化此Estimator的方法：
+
+```python
+# Build a DNN with 2 hidden layers and 10 nodes in each hidden layer.
+classifier = tf.estimator.DNNClassifier(
+    feature_columns=my_feature_columns,
+    # Two hidden layers of 10 nodes each.
+    hidden_units=[10, 10],
+    # The model must choose between 3 classes.
+    n_classes=3)
+```
+
+
+
+## 训练，评估和预测
+
+现在我们有一个`Estimator`对象，我们可以调用方法来执行以下操作：
+
+- 训练模型。 
+- 评估训练的模型。 
+- 使用训练好的模型进行预测。
+
+### 训练模型
+
+通过调用`Estimator`的训练方法训练模型如下：
+
+```python
+# Train the Model.
+classifier.train(
+    input_fn=lambda:iris_data.train_input_fn(train_x, train_y, args.batch_size),
+    steps=args.train_steps)
+```
+
+这里我们使用`lambda`表达式来捕获`input_fn`调用包含的参数，它同时提供一个不带参数的输入函数，正如`Estimator`预期的那样。参数`steps`告诉方法在多次训练步骤后停止训练。
+
+### 评估训练模型
+
+现在模型已经过训练，我们可以得到一些关于其性能的统计数据。以下代码块评估测试数据上训练后模型的准确性：
+
+```python
+# Evaluate the model.
+eval_result = classifier.evaluate(
+    input_fn=lambda:iris_data.eval_input_fn(test_x, test_y, args.batch_size))
+
+print('\nTest set accuracy: {accuracy:0.3f}\n'.format(**eval_result))
+```
+
+与我们对训练方法的调用不同，我们没有通过`steps`参数来评估。我们的`eval_input_fn`只对数据进行一个`epoch`。
+
+运行此代码会生成以下输出（或类似内容）：
+
+```python
+Test set accuracy: 0.967
+```
+
+### 根据训练模型进行预测（推断）
+
+我们现在有一个训练有素的模型，可以产生良好的评估结果。我们现在可以使用训练好的模型对一些未标记的测量结果预测鸢尾花的种类。与训练和评估一样，我们使用单个函数调用进行预测：
+
+```python
+# Generate predictions from the model
+expected = ['Setosa', 'Versicolor', 'Virginica']
+predict_x = {
+    'SepalLength': [5.1, 5.9, 6.9],
+    'SepalWidth': [3.3, 3.0, 3.1],
+    'PetalLength': [1.7, 4.2, 5.4],
+    'PetalWidth': [0.5, 1.5, 2.1],
+}
+predictions = classifier.predict(
+    input_fn=lambda:iris_data.eval_input_fn(predict_x,
+                                            batch_size=args.batch_size))
+```
+
+`predict`方法返回一个可迭代的Python变量，为每个示例生成一个预测结果字典。以下代码打印了一些预测及其概率：
+
+```python
+for pred_dict, expec in zip(predictions, expected):
+    template = ('\nPrediction is "{}" ({:.1f}%), expected "{}"')
+
+    class_id = pred_dict['class_ids'][0]
+    probability = pred_dict['probabilities'][class_id]
+
+    print(template.format(iris_data.SPECIES[class_id],
+                          100 * probability, expec))
+```
+
+运行上面的代码将生成以下输出：
+
+```python
+...
+Prediction is "Setosa" (99.6%), expected "Setosa"
+
+Prediction is "Versicolor" (99.8%), expected "Versicolor"
+
+Prediction is "Virginica" (97.9%), expected "Virginica"
+```
+
+
+
+## 总结
+
+预置评估器`Estimator`是快速创建标准模型的有效方法。 
+
+现在你已经开始编写TensorFlow程序，你可以参考以下材料：
+
+- [Checkpoints](https://www.tensorflow.org/get_started/checkpoints)了解如何保存和恢复模型。 
+- [Datasets](https://www.tensorflow.org/get_started/datasets_quickstart)了解有关将数据导入模型的更多信息。 
+- [Creating Custom Estimators](https://www.tensorflow.org/get_started/custom_estimators)学习如何编写自己的估算器。
