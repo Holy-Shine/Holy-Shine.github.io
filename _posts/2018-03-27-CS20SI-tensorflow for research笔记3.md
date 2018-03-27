@@ -1,7 +1,7 @@
 ---
 layout: post
-title: CS20SI-tensorflow for research笔记: Lecture3
-tags: 深度学习 Tensoflow
+title: CS20SI-tensorflow for research笔记:Lecture3
+tags: 深度学习 Tensorflow
 key: 20180327_tf3
 picture_frame: shadow
 ---
