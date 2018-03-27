@@ -167,29 +167,29 @@ z = x**2 + x * y + 3
 
 sess = tf.Session()
 # 初始化变量
-sess.run(tf.global_variable_initialize())
+sess.run(tf.global_variables_initializer())
 
 # 定义优化函数
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1)
+optimizer= tf.train.GradientDescentOptimizer(learning_rate=0.1)
 
 # 计算z关于x,y的梯度
 grads_and_vars = optimizer.compute_gradients(z, [x, y])
 
 # 获取变量
-get_grads_vars = [(gv[0], gv[1]) for gv in grads_and_vars]
+get_grads_and_vars = [(gv[0], gv[1]) for gv in grads_and_vars]
 
 # dz/dx = 2*x + y = 13
 # dz/dy = x = 5
 print('grads and variables')
-print('x: grad {}, value {}'.format(sess.run(get_grads_vars[0][0]), sess.run(get_grads_and_vars[0][1])))
+print('x: grad {}, value {}'.format(sess.run(get_grads_and_vars[0][0]), sess.run(get_grads_and_vars[0][1])))
 
-print('y: grad {}, value {}'.format(sess.run(get_grads_vars[1][0]), sess.run(get_grads_and_vars[1][1])))
+print('y: grad {}, value {}'.format(sess.run(get_grads_and_vars[1][0]), sess.run(get_grads_and_vars[1][1])))
 
 print('Before optimization')
 print('x: {}, y:{}'.format(sess.run(x), sess.run(y)))
 
 # 优化参数
-opt.optimizer.apply_gradients(get_grads_and_vars)
+opt=optimizer.apply_gradients(get_grads_and_vars)
 # x = x-0.1*dz/dx = 5-0.1*13=3.7
 # y = y-0.1*dz/dy = 3-0.1*5 = 2.5
 print('After optimization using learning rate 0.1')
