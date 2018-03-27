@@ -6,10 +6,13 @@ key: 20180327_tf3
 picture_frame: shadow
 ---
 本文整理自知乎专栏[深度炼丹](https://zhuanlan.zhihu.com/c_94953554)，转载请征求原作者同意。
+
 本文的全部代码都在原作者GitHub仓库[github](http://link.zhihu.com/?target=https%3A//github.com/SherlockLiao/tensorflow-beginner/tree/master/lab)
+
 CS20SI是Stanford大学开设的基于Tensorflow的深度学习研究课程。
 ## TensorFlow中的Linear Regression
 我们用tensorflow实现一个线性回归的例子。
+
 **问题**：希望找到城市中纵火案和盗窃案之间的关系，纵火案的数量是$X$，盗窃案的数量是$Y$，我们假设存在如下线性关系：$Y=wX+b$。
 ### TensorFlow实现
 1. 首先定义输入$X$和目标$Y$的占位符(placeholder)
@@ -54,12 +57,16 @@ tensorflow如何判断哪些参数更新，哪些不更新呢？`tf.Variable(tra
 ### 可视化
 打开tensorboard查看我们的结构图
 ![l31.jpg](https://i.loli.net/2018/03/26/5ab8f3c0832b6.jpg)
+
 最后将数据点和预测直线画出来：
+
 ![里2.jpg](https://i.loli.net/2018/03/26/5ab8f3f1a100c.jpg)
 ### 如何改善模型
 1. 增加维度，原始模型是$Y=wX+b$，我们可以提升一维，使其变成$Y=w_1X^2+w_2X+b$
 2. 换一种计算loss的方法，比如huber loss，当误差小的时候用均方误差，误差大的时候使用绝对值误差
+
 $$L_\delta(y,f(x))=\left\{\begin{array}{ll}\frac{1}{2}(y-f(x))^2&\textrm{for}|y-f(x)|\leq\delta \\ \delta|y-f(x)|-\frac{1}{2}\delta^2&\textrm{otherwise}\end{array} \right. $$
+
 在实现huber loss的时候，因为tf是以图的形式来定义，所以不能使用逻辑语句，比如`if`等，我们可以使用TensorFlow中的条件判断语句，比如`tf.where`、`tf.case`等等，huber loss的实现方法如下：
     ```python
     def huber_loss(labels, predictions, delta=1.0):
@@ -137,7 +144,9 @@ print('x: {:.3f}, y: {:.3f}'.format(sess.run(x), sess.run(y)))
 sess.close()
 ```
 可得到结果：
+
 ![l3.jpg](https://i.loli.net/2018/03/26/5ab8f40a20f7a.jpg)
+
 在实际操作中，不需要手动更新参数，optimizer类可以帮我们自动更新。另外还有一个函数也能够计算梯度。
 ```python
 tf.gradients(ys, xs, grad_ys=None, name='gradients', colocate_gradients_with_ops=False,gate_gradients=False, aggregation_method=None)
@@ -162,6 +171,7 @@ tf.train.RMSPropOptimizer
 
 ## TensorFlow中的Logistic Regression
 我们使用简单的logistic regression来解决分类问题，使用MNIST手写字体，模型公式如下：
+
 $$\begin{array}{rl}logits &= X*w+b \\Y_{predicted} &={\bf softmax}(logits)\\
 loss &= {\bf CrossEntropy}(Y, Y_{predicted})\end{array}$$
 
@@ -203,6 +213,9 @@ mnist = input_data.read_data_sets('./data/mnist', one_hot = True)
 
 ### 结果可视化
 最后可以得到训练集的loss的验证集准确率如下
+
 ![l4.jpg](https://i.loli.net/2018/03/26/5ab8f4253df9b.jpg)
-可以发现经过10 epochs，验证集能够实现74%的准确率。同时，我们还能够得到tensorboard可视化如下。
+
+可以发现经过10 epochs，验证集能够实现74%的准确率。同时，我们还能够得到tensorboard可视化如下
+
 ![l5.jpg](https://i.loli.net/2018/03/26/5ab8f43ade7fc.jpg)
