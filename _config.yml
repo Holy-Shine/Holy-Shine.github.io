@@ -25,6 +25,13 @@ nav_lists:
       zh-Hans: 关于本人
       zh-Hant: 關於
     url: /about.html
+  - titles:
+      en: All Posts
+      zh: 文章分类
+      zh-Hans: 文章分类
+      zh-Hant: 歸檔
+    url: /all.html
+
 
 # paths:
 #   base: /
