@@ -10,6 +10,8 @@ picture_frame: shadow
 本文的全部代码都在原作者GitHub仓库[github](http://link.zhihu.com/?target=https%3A//github.com/SherlockLiao/tensorflow-beginner/tree/master/lab)
 
 CS20SI是Stanford大学开设的基于Tensorflow的深度学习研究课程。
+
+Lecture2主要介绍TensorFlow的基本语法。<!--more-->
 ## TensorBoard可视化
 安装TensorFlow的时候TensorBoard自动安装，使用`writer=tf.summary.FileWriter('./graph',sess.graph)`创建一个文件写入器,`./graph`是文件路径，`sess.graph`表示读入的图结构  
 简单的例子：

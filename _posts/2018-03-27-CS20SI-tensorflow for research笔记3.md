@@ -10,6 +10,8 @@ picture_frame: shadow
 本文的全部代码都在原作者GitHub仓库[github](http://link.zhihu.com/?target=https%3A//github.com/SherlockLiao/tensorflow-beginner/tree/master/lab)
 
 CS20SI是Stanford大学开设的基于Tensorflow的深度学习研究课程。
+
+Lecture3主要介绍TensorFlow在线性回归和逻辑回归上的应用。<!--more-->
 ## TensorFlow中的Linear Regression
 我们用tensorflow实现一个线性回归的例子。
 
