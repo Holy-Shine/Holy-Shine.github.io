@@ -56,6 +56,58 @@ tensorflow如何判断哪些参数更新，哪些不更新呢？`tf.Variable(tra
             print('Epoch {0}: {1}'.format(i, total_loss/n_samples))
     ```
 
+上述步骤源代码：
+```python
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+import xlrd
+
+
+DATA_FILE = 'data/fire_theft.xls'
+
+# step 1:加载数据
+book = xlrd.open_workbook(DATA_FILE, encoding_override='utf-8')
+sheet = book.sheet_by_index(0)
+data = np.asarray([sheet.row_values(i) for i in range(1, sheet.nrows)], dtype=np.float32)
+n_samples = sheet.nrows - 1
+
+# step 2:定义输入输出的占位符
+X = tf.placeholder(tf.float32, shape=[], name='input')
+Y = tf.placeholder(tf.float32, shape=[], name='label')
+
+# step 3:定义需要更新的参数w和b
+w = tf.get_variable('weight',shape=[],initializer=tf.truncated_normal_initializer)
+b = tf.get_variable('bias', shape=[], initializer=tf.zeros_initializer)
+
+# step 4:定义模型输出和误差函数，这里使用均方误差
+Y_predict = w * X + b;
+loss = tf.square(Y - Y_predict, name='loss')
+
+# step 5:定义优化函数,这里使用简单梯度下降
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=1e-3).minimize(loss)
+
+# step 6:在session中运算
+init = tf.global_variables_initializer()
+with tf.Session() as sess:
+    writer = tf.summary.FileWriter('./linear_log', graph=sess.graph)
+    sess.run(init)
+    for i in range(100):
+        total_loss = 0
+        for x, y in data:
+            _, l =  sess.run([optimizer, loss], feed_dict={X: x, Y:y})
+            total_loss += l
+        print('Epoch {0}: {1}'.format(i, total_loss/n_samples))
+    w, b = sess.run([w, b])
+    writer.close()
+
+# step 7:画出结果
+X, Y = data.T[0], data.T[1]
+plt.plot(X,Y, 'bo', label='Real data')
+plt.plot(X,X*w+b, 'r', label='Predicted data')
+plt.legend()
+plt.show()
+```
 ### 可视化
 打开tensorboard查看我们的结构图
 ![l31.jpg](https://i.loli.net/2018/03/26/5ab8f3c0832b6.jpg)
