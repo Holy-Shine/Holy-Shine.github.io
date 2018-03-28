@@ -265,6 +265,63 @@ mnist = input_data.read_data_sets('./data/mnist', one_hot = True)
 
 5. 在session中运算
 
+逻辑回归部分代码如下：
+```python
+import tensorflow as tf
+import time
+# 模型参数
+learning_rate = 0.01
+batch_size = 128
+n_epochs = 10
+
+# step 1:读取数据集
+from tensorflow.examples.tutorials.mnist import input_data
+mnist = input_data.read_data_sets('./data/mnist', one_hot = True)
+
+# step 2:定义占位符和更新变量
+x = tf.placeholder(tf.float32, shape=[None, 784], name='image')
+y = tf.placeholder(tf.int32, shape=[None, 10], name='label')
+
+w = tf.get_variable('weight', shape=[784,10],initializer=tf.truncated_normal_initializer)
+b = tf.get_variable('bias', shape=[10], initializer=tf.zeros_initializer)
+
+# step 3:定义结果、loss和优化函数
+logits = tf.matmul(x, w) + b
+entropy = tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=logits)
+loss = tf.reduce_mean(entropy,axis=0)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+
+preds = tf.nn.softmax(logits)
+correct_preds = tf.equal(tf.argmax(preds, 1), tf.argmax(y, 1))
+accuracy = tf.reduce_sum(tf.cast(correct_preds, tf.float32), axis=0)
+
+with tf.Session() as sess:
+    writer = tf.summary.FileWriter('./logistic_log', graph=sess.graph)
+    start_time = time.time()
+    sess.run(tf.global_variables_initializer())
+    n_batches = int(mnist.train.num_examples / batch_size)
+    for i in range(n_epochs):
+        total_loss=0
+        for _ in range(n_batches):
+            X_batch, Y_batch = mnist.train.next_batch(batch_size)
+            _, loss_batch = sess.run([optimizer, loss], feed_dict={x: X_batch, y:Y_batch})
+            total_loss+=loss_batch
+        print('Average loss epoch {0}：{1}'.format(i, total_loss/n_batches))
+
+    print('Total time: {0} seconds'.format(time.time()-start_time))
+    print('Optimization Finished!')
+
+    # test model
+    n_batches = int(mnist.test.num_examples / batch_size)
+    total_correct_preds = 0
+
+    for i in range(n_batches):
+        X_batch, Y_batch = mnist.test.next_batch(batch_size)
+        accuracy_batch = sess.run(accuracy, feed_dict={x:X_batch,y:Y_batch})
+        total_correct_preds += accuracy_batch
+    print('Average {0}'.format(total_correct_preds/mnist.test.num_examples))
+
+```
 ### 结果可视化
 最后可以得到训练集的loss的验证集准确率如下
 
