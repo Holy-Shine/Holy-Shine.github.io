@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Tensorflow初上手
+title: TensorFlow.org教程笔记(一)Tensorflow初上手
 tags: 机器学习 深度学习 Tensorflow
 key: 20180320_tsfhjm
 picture_frame: shadow
@@ -102,7 +102,7 @@ Prediction is "Virginica" (97.9%), expected "Virginica"
 - 花瓣长度
 - 花瓣宽度
 
-我们的模型将这些特征表示为`float32`数值数据。 
+我们的模型将这些特征表示为`float32`数值数据。
 
 标签用来标识鸢尾所属种类，它必须是下列3者之一：
 
@@ -110,7 +110,7 @@ Prediction is "Virginica" (97.9%), expected "Virginica"
 - Iris versicolor
 - Iris virginica
 
-我们的模型将标签作为`int32`分类数据。 
+我们的模型将标签作为`int32`分类数据。
 
 下表显示了数据集中的三个示例：
 
@@ -254,8 +254,8 @@ classifier = tf.estimator.DNNClassifier(
 
 现在我们有一个`Estimator`对象，我们可以调用方法来执行以下操作：
 
-- 训练模型。 
-- 评估训练的模型。 
+- 训练模型。
+- 评估训练的模型。
 - 使用训练好的模型进行预测。
 
 ### 训练模型
@@ -337,12 +337,12 @@ Prediction is "Virginica" (97.9%), expected "Virginica"
 
 ## 总结
 
-预置评估器`Estimator`是快速创建标准模型的有效方法。 
+预置评估器`Estimator`是快速创建标准模型的有效方法。
 
 现在你已经开始编写TensorFlow程序，你可以参考以下材料：
 
-- [Checkpoints](https://www.tensorflow.org/get_started/checkpoints)了解如何保存和恢复模型。 
-- [Datasets](https://www.tensorflow.org/get_started/datasets_quickstart)了解有关将数据导入模型的更多信息。 
+- [Checkpoints](https://www.tensorflow.org/get_started/checkpoints)了解如何保存和恢复模型。
+- [Datasets](https://www.tensorflow.org/get_started/datasets_quickstart)了解有关将数据导入模型的更多信息。
 - [Creating Custom Estimators](https://www.tensorflow.org/get_started/custom_estimators)学习如何编写自己的估算器。
 
 
@@ -365,73 +365,73 @@ SPECIES = ['Setosa', 'Versicolor', 'Virginica']
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', default=100, type=int, help='batch size')
-parser.add_argument('--train_steps', default=1000, type=int, 
+parser.add_argument('--train_steps', default=1000, type=int,
                      help='number of training steps')
 
 def load_data(y_name='Species'):
     train_path = tf.keras.utils.get_file(TRAIN_URL.split('/')[-1], TRAIN_URL)
     test_path = tf.keras.utils.get_file(TEST_URL.split('/')[-1], TEST_URL)
-    
+
     train = pd.read_csv(train_path, names=CSV_COLUMN_NAMES, header=0)
     train_x, train_y = train, train.pop(y_name)
-    
+
     test = pd.read_csv(test_path, names=CSV_COLUMN_NAMES, header=0)
     test_x, test_y = test, test.pop(y_name)
-    
+
     return (train_x, train_y),(test_x, test_y)
-        
+
 def train_input_fn(features, labels, batch_size):
     # 将输入转化为Dataset数据
     dataset = tf.data.Dataset.from_tensor_slices((dict(features), labels))
-    
+
     # shuffle, repeat, and batch
     dataset = dataset.shuffle(1000).repeat().batch(batch_size)
-    
+
     return dataset
-  
+
 def eval_input_fn(features, labels, batch_size):
     features = dict(features)
     if labels is None:
         inputs = features
     else:
         inputs = (features, labels)
-    
+
     dataset = tf.data.Dataset.from_tensor_slices(inputs)
-    
+
     assert batch_size is not None, "batch_size must not be None"
     dataset = dataset.batch(batch_size)
-    
+
     return dataset
-    
+
 def main(argv):
     args = parser.parse_args(argv[1:])
-    
+
     # 获取数据,返回的数据都是pandas.DataFrame类型
     (train_x, train_y), (test_x, test_y) = load_data()
-    
+
     # 说明特征列,告诉模型如何处理输入
     my_feature_columns=[]
     for key in train_x.keys():
         my_feature_columns.append(tf.feature_column.numeric_column(key=key))
-        
+
     # 创建评估器Estimator
     classifier = tf.estimator.DNNClassifier(
         feature_columns=my_feature_columns,
         hidden_units=[10, 10],
         n_classes=3)
-        
+
     # 训练模型,
     classifier.train(
         input_fn=lambda:train_input_fn(train_x, train_y,
                                        args.batch_size),
         steps=args.train_steps)
-        
+
     # 评估模型
     eval_result = classifier.evaluate(
         input_fn=lambda:eval_input_fn(test_x, test_y,
                                       args.batch_size))
-    print('\nTest set accuracy: {accuracy:0.3f}\n'.format(**eval_result)) 
-    
+    print('\nTest set accuracy: {accuracy:0.3f}\n'.format(**eval_result))
+
     # 从模型生成预测
     expected = ['Setosa', 'Versicolor', 'Virginica']
     predict_x = {
@@ -440,24 +440,23 @@ def main(argv):
         'PetalLength': [1.7, 4.2, 5.4],
         'PetalWidth': [0.5, 1.5, 2.1],
     }
-    
+
     predictions = classifier.predict(
         input_fn=lambda:eval_input_fn(predict_x,
                                       labels=None,
                                       batch_size=args.batch_size))
-    
+
     template = ('\nPrediciton is "{}" ({:.1f}%), expected "{}"')
-    
+
     for pred_dict, expec in zip(predictions, expected):
         class_id = pred_dict['class_ids'][0]
         probability = pred_dict['probabilities'][class_id]
-        
-        print(template.format(SPECIES[class_id],100*probability, expec))
-                                   
 
-        
+        print(template.format(SPECIES[class_id],100*probability, expec))
+
+
+
 if __name__ == '__main__':
     tf.logging.set_verbosity(tf.logging.INFO)
-    tf.app.run(main) 
+    tf.app.run(main)
 ```
-
