@@ -18,7 +18,7 @@ picture_frame: shadow
 
 对于刚开始使用`tf.data`，从数组中提取切片(slices)是最简单的方法。  
 
-[笔记(1)TensorFlow初上手](http://www.cnblogs.com/HolyShine/p/8618265.html)里提到了训练输入函数`train_input_fn`，该函数将数据传输到`Estimator`中：
+[笔记(1)TensorFlow初上手](http://logwhen.cn/2018/03/20/TensorFlow.org%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0(%E4%B8%80)Tensorflow%E5%88%9D%E4%B8%8A%E6%89%8B.html)里提到了训练输入函数`train_input_fn`，该函数将数据传输到`Estimator`中：
 
 ```python
 def train_input_fn(features, labels, batch_size):

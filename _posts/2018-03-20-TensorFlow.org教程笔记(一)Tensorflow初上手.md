@@ -342,7 +342,7 @@ Prediction is "Virginica" (97.9%), expected "Virginica"
 现在你已经开始编写TensorFlow程序，你可以参考以下材料：
 
 - [Checkpoints](https://www.tensorflow.org/get_started/checkpoints)了解如何保存和恢复模型。
-- [Datasets](https://www.tensorflow.org/get_started/datasets_quickstart)了解有关将数据导入模型的更多信息。
+- [Datasets](http://logwhen.cn/2018/03/29/TensorFlow.org%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0(%E4%BA%8C)DataSets%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html)了解有关将数据导入模型的更多信息。
 - [Creating Custom Estimators](https://www.tensorflow.org/get_started/custom_estimators)学习如何编写自己的估算器。
 
 
